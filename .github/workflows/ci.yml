@@ -1,19 +1,22 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: CI
 
-env:
-  SCREENER_API_KEY: ${{ secrets.SCREENER_API_KEY }}
-  SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-  SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-
+# Comes from https://github.com/Refren86/freeCodeCampReactTests/settings/secrets/actions
+env: 
+  SCREEN_API_KEY: ${{ secrets.SCREENER_API_KEY }}
+  SAUSE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+  SAUCE_ACCESS_KEY: ${{ secrets.SAUSE_ACCESS_KEY }}
+  
+# When CI will run
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
+# Jobs to execute
 jobs:
   build:
 
@@ -30,17 +33,17 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install dependencies 📦
-      #Using npm ci is generally faster than running npm install
+    - name: Install dependencies
+    # NB! "npm ci" is faster for github actions rather than "npm install"
       run: |
         npm ci
-    - name: Build the app 🏗
+    - name: Build the app
       run: |
         npm run build
-    - name: Run component tests 🔸
+    - name: Run component tests
       run: |
         npm run test
-    - name: Start the app 📤
+    - name: Start the app
       run: |
         npm start &
         npx wait-on --timeout 60000
